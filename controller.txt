@@ -1,0 +1,175 @@
+
+// Comments Added
+public class addImpactFormNew1 {
+
+   public String getStatusOptions { get; set; }
+
+   public String UserSelectVAlue{get;set;}
+   public String UserSelectValue1{get;set;}
+   public String UserSelectValue2{get;set;}
+   public String UserSelectValue3{get;set;}
+   public String UserSelectValue4{get;set;}
+   public String UserSelectValue5{get;set;}
+   public List<SelectOption> statusOptions { get;set; }
+    public Impact__c iifRecord{get;set;}
+    private ApexPages.StandardController stdCtrl {get;set;}
+
+   Impact__c impact;
+   Impact_Objective__c impactobjective;
+   
+   public List<SelectOption> AppraisalTypeList {
+        get
+        {
+            List<SelectOption> options = new List<SelectOption>();
+            options.add(new selectOption('Select', 'Please Select a Value'));
+            Schema.DescribeFieldResult fieldResult = Impact__c.Focus_Area__c.getDescribe();
+               List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+       
+           for( Schema.PicklistEntry f : ple)
+           {
+              options.add(new SelectOption(f.getLabel(), f.getValue()));
+           }      
+           return options;
+        }
+        set;}
+        
+     public List<SelectOption> overallEffect {
+        get
+        {
+            List<SelectOption> options = new List<SelectOption>();
+            options.add(new selectOption('Select', 'Please Select a Value'));
+            Schema.DescribeFieldResult fieldResult = Impact__c.Overall_effectiveness__c.getDescribe();
+               List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+       
+           for( Schema.PicklistEntry f : ple)
+           {
+              options.add(new SelectOption(f.getLabel(), f.getValue()));
+           }      
+           return options;
+        }
+        set;}   
+        
+        public List<SelectOption> qualityTeaching {
+        get
+        {
+            List<SelectOption> options = new List<SelectOption>();
+            options.add(new selectOption('Select', 'Please Select a Value'));
+            Schema.DescribeFieldResult fieldResult = Impact__c.Quality_of_Teaching_Learning_and_Assess__c.getDescribe();
+               List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+       
+           for( Schema.PicklistEntry f : ple)
+           {
+              options.add(new SelectOption(f.getLabel(), f.getValue()));
+           }      
+           return options;
+        }
+        set;}  
+        
+        public List<SelectOption> outcomePupils {
+        get
+        {
+            List<SelectOption> options = new List<SelectOption>();
+            options.add(new selectOption('Select', 'Please Select a Value'));
+            Schema.DescribeFieldResult fieldResult = Impact__c.Outcomes_for_Pupils__c.getDescribe();
+               List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+       
+           for( Schema.PicklistEntry f : ple)
+           {
+              options.add(new SelectOption(f.getLabel(), f.getValue()));
+           }      
+           return options;
+        }
+        set;}   
+        
+        public List<SelectOption> effectLeaderManagement{
+        get
+        {
+            List<SelectOption> options = new List<SelectOption>();
+            options.add(new selectOption('Select', 'Please Select a Value'));
+            Schema.DescribeFieldResult fieldResult = Impact__c.Effectiveness_of_Leadership_and_Manageme__c.getDescribe();
+               List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+       
+           for( Schema.PicklistEntry f : ple)
+           {
+              options.add(new SelectOption(f.getLabel(), f.getValue()));
+           }      
+           return options;
+        }
+        set;}   
+        
+        public List<SelectOption> personalDevpWelfare{
+        get
+        {
+            List<SelectOption> options = new List<SelectOption>();
+            options.add(new selectOption('Select', 'Please Select a Value'));
+            Schema.DescribeFieldResult fieldResult = Impact__c.Personal_Development_Behaviour_and_Welf__c.getDescribe();
+               List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+       
+           for( Schema.PicklistEntry f : ple)
+           {
+              options.add(new SelectOption(f.getLabel(), f.getValue()));
+           }      
+           return options;
+        }
+        set;} 
+        
+     public addImpactFormNew1() {
+
+    }
+
+   public Impact__c getImpact() {
+      if(impact == null) impact= new Impact__c();
+      return impact;
+   }
+
+   public Impact_Objective__c getImpactObjective() {
+      if(impactobjective == null) impactobjective = new Impact_Objective__c();
+      return impactobjective;
+   }
+   
+   public PageReference step1() {
+      return Page.impact_performance_page;
+   }
+
+   public PageReference step2() {
+      return Page.impact_objective_temppage;
+   }
+
+   
+
+   /*public PageReference step3() {
+      return Page.opptyStep3;
+   }*/
+
+
+    public PageReference cancel() {
+            PageReference impPage = new ApexPages.StandardController(impact).view();
+            impPage.setRedirect(true);
+            return impPage; 
+    }
+
+   
+   public PageReference save() {
+           
+           impact.Focus_Area__c = UserSelectVAlue;
+           impact.Overall_effectiveness__c = UserSelectValue1;
+           impact.Quality_of_Teaching_Learning_and_Assess__c = UserSelectValue2;
+           impact.Outcomes_for_Pupils__c = UserSelectValue3;
+           impact.Effectiveness_of_Leadership_and_Manageme__c = UserSelectValue4;
+           impact.Personal_Development_Behaviour_and_Welf__c = UserSelectValue5;
+           
+           system.debug('Impact data is: '+impact);
+           insert impact;
+           List<Impact_Area_of_Focus__c> impFocus = new List<Impact_Area_of_Focus__c>();
+           impFocus = [Select Impact__c from Impact_Area_of_Focus__c where Impact__c=:impact.id limit 1];
+           
+           impactobjective.Impact_Area_of_Focus__c=impFocus[0].id;
+           insert impactobjective;
+
+     PageReference impactPage = new ApexPages.StandardController(impact).view();
+      impactPage.setRedirect(true);
+
+      return impactPage;
+   }
+
+}
